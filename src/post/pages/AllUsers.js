@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
-import { Grid, Modal, Pagination, ToggleButton, Typography } from "@mui/material";
+import { Grid, ListItem, ListItemText, Modal, Pagination, ToggleButton, Typography } from "@mui/material";
 import { CheckCircleOutlineRounded } from "@material-ui/icons";
 import getUsersAll from "../hooks/getUsersAll";
 import CardUser from "../components/CardUser";
@@ -9,6 +9,7 @@ import FormCreateUser from "../components/FormCreateUser";
 import FormUpdateUser from "../components/FormUpdateUser";
 import FormDeleteUser from "../components/FormDeleteUser";
 import { styleModal } from "../styles/modal";
+import TableUsers from "../components/TableUsers";
 
 
 const AllUsers = ({ user }) => {
@@ -118,9 +119,11 @@ const AllUsers = ({ user }) => {
 
       <Box m={2} p={2}>
         <Typography sx={{ fontWeight: 'bold' }} align="center" variant="h4" component="h4" mb={8} mt={4} color="blue">usuarios</Typography>
-        <Grid container spacing={2}>
-          {listaPost.map((user) => (
-            <Grid item s={3} key={user.id}>
+        
+{/*         <Grid container spacing={2}>
+ */}        
+{/*           {listaPost.map((user) => (
+             <Grid item s={3} key={user.id}>
               <Box m={2} p={2}>
                 <CardUser
                   user={user}
@@ -129,10 +132,17 @@ const AllUsers = ({ user }) => {
                   setUserSelected={setUserSelected}
                 />
               </Box>
-            </Grid>
-          ))}
-        </Grid>
-        {userSelected && (
+            </Grid>  */}
+           
+           <TableUsers 
+           list={listaPost}
+           setOpenUpdate={setOpenModalUpdate}
+           setOpenDelete={setOpenModalDelete}
+           setUserSelected={setUserSelected}
+            />
+          
+{/*         </Grid>
+ */}        {userSelected && (
           <>
             <Modal
               open={openModalDelete}
