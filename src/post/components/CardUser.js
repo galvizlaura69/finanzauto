@@ -8,33 +8,19 @@ import { useHistory } from "react-router-dom";
 import swal from 'sweetalert';
 import deleteUser from "../hooks/deleteUser";
 
-export default function CardUser( {user, handleClose, setOpen, setUserSelected, setOpenDelete} ) {
+export default function CardUser( {
+  user,
+  setOpenUpdate,
+  setOpenDelete,
+  setUserSelected,
+} ) {
   const {
     firstName,
     id,
     lastName,
     picture,
     } = user;
-
-    let history = useHistory();
   
-  const handleEliminar = async () => {
-    try {
-      console.log(id);
-      await deleteUser(id);
-      handleClose();
-
-    }
-    catch (error) {
-      swal({
-        title: "Error",
-        text: "No se ha podido borrar",
-        icon: "error"
-      });
-      console.log('error');
-      return error.message;
-    }
-  };
 
   return (
     <Card variant="outlined" sx={{ minHeight: 200, minWidth:300 }}>
@@ -44,11 +30,11 @@ export default function CardUser( {user, handleClose, setOpen, setUserSelected, 
 
       </CardContent>
       <CardActions>
-        <Button  onClick={() => {handleEliminar(id);}}>
+      <Button  onClick={() => {setUserSelected(user); setOpenDelete(true);}}>
           eliminar
         </Button>
         <br></br>
-        <Button  onClick={() => {setUserSelected(user); setOpen(true);}}>
+        <Button  onClick={() => {setUserSelected(user); setOpenUpdate(true);}}>
           actualizar
         </Button>
       </CardActions>

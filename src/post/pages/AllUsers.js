@@ -12,7 +12,7 @@ import { styleModal } from "../styles/modal";
 
 
 const AllUsers = ({ user }) => {
-  const [open, setOpen] = useState(false);
+  const [openModalCreate, setOpenModalCreate] = useState(false);
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModalDelete, setOpenModalDelete] = useState(false);
   const [listaPost, setListaPost] = useState([]);
@@ -22,7 +22,7 @@ const AllUsers = ({ user }) => {
   const [userSelected, setUserSelected] = useState();
   const [areMyUsers, setAreMyUsers] = useState(false);
 
-  const handleOpen = () => setOpen(true);
+  const handleOpenModalCreate = () => setOpenModalCreate(true);
   const handleCloseDelete = () => {
     getList();
     setOpenModalDelete(false);
@@ -33,9 +33,9 @@ const AllUsers = ({ user }) => {
     setOpenModalUpdate(false);
   };
 
-  const handleClose = () => {
+  const handleCloseCreate = () => {
     getList();
-    setOpen(false);
+    setOpenModalCreate(false);
   };
 
   const handleSearchChange = (event) => {
@@ -71,34 +71,50 @@ const AllUsers = ({ user }) => {
 
   return (
     <>
-      <input
-        type="text"
-        placeholder="Buscar..."
-        value={searchTerm}
-        onChange={handleSearchChange}
-      />
-      <Typography sx={{ fontWeight: 'bold' }} align="left" component="p">only my users</Typography>
-
-      <ToggleButton
-        value="check"
-        selected={areMyUsers}
-        onChange={() => {
-          setAreMyUsers(!areMyUsers);
-        }}
-      >
-        <CheckCircleOutlineRounded />
-      </ToggleButton>
-      {!areMyUsers && (
-        <Pagination
-          count={totalPages}
-          page={page}
-          onChange={handlePageChange}
-          variant="outlined"
-          shape="rounded"
+      <div className="controls-container">
+        <input
+          type="text"
+          placeholder="Buscar..."
+          value={searchTerm}
+          onChange={handleSearchChange}
         />
-      )}
+        <Typography sx={{ fontWeight: 'bold' }} align="left" component="p">only my users</Typography>
 
-      <Button variant="contained" onClick={handleOpen}>CREAR NUEVO</Button>
+        <ToggleButton
+          value="check"
+          selected={areMyUsers}
+          onChange={() => {
+            setAreMyUsers(!areMyUsers);
+          }}
+        >
+          <CheckCircleOutlineRounded />
+        </ToggleButton>
+        {!areMyUsers && (
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+          />
+        )}
+      </div>
+
+
+      <div className="create-user-zone">
+        <Button variant="contained" onClick={handleOpenModalCreate}>CREAR NUEVO</Button>
+        <Modal
+          open={openModalCreate}
+          onClose={handleCloseCreate}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={styleModal}>
+            <FormCreateUser handleClose={handleCloseCreate} />
+            <Button onClick={handleCloseCreate}>Cerrar</Button>
+          </Box>
+        </Modal>
+      </div>
 
       <Box m={2} p={2}>
         <Typography sx={{ fontWeight: 'bold' }} align="center" variant="h4" component="h4" mb={8} mt={4} color="blue">usuarios</Typography>
@@ -108,65 +124,41 @@ const AllUsers = ({ user }) => {
               <Box m={2} p={2}>
                 <CardUser
                   user={user}
-                  handleClose={handleCloseUpdate}
-                  setOpen={setOpenModalUpdate}
+                  setOpenUpdate={setOpenModalUpdate}
+                  setOpenDelete={setOpenModalDelete}
                   setUserSelected={setUserSelected}
                 />
               </Box>
             </Grid>
           ))}
         </Grid>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={styleModal}>
-            <FormCreateUser user={user} handleClose={handleClose} />
-            <Button onClick={handleClose}>Cerrar</Button>
-          </Box>
-        </Modal>
         {userSelected && (
-          <Modal
-            open={openModalUpdate}
-            onClose={handleCloseUpdate}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={styleModal}>
-              <Typography variant="h6" component="h2">
-                <FormUpdateUser
-                  user={userSelected}
-                  handleClose={handleCloseUpdate} />
-              </Typography>
-              <Button onClick={handleCloseUpdate}>Cerrar</Button>
-            </Box>
-          </Modal>
+          <>
+            <Modal
+              open={openModalDelete}
+              onClose={handleCloseDelete}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={styleModal}>
+                <FormDeleteUser user={userSelected} handleClose={handleCloseDelete} />
+              </Box>
+            </Modal>
+            <Modal
+              open={openModalUpdate}
+              onClose={handleCloseUpdate}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={styleModal}>
+                  <FormUpdateUser
+                    user={userSelected}
+                    handleClose={handleCloseUpdate} />
+              </Box>
+            </Modal>
+          </>
         )}
-
-        <Modal
-          open={openModalDelete}
-          onClose={handleCloseDelete}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={styleModal}>
-            <FormDeleteUser user={user} handleClose={handleClose} />
-            <Button onClick={handleCloseDelete}>Cerrar</Button>
-          </Box>
-        </Modal>
-
       </Box>
-      {!areMyUsers && (
-        <Pagination
-          count={totalPages}
-          page={page}
-          onChange={handlePageChange}
-          variant="outlined"
-          shape="rounded"
-        />
-      )}
     </>
   );
 };

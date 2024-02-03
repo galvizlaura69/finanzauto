@@ -1,47 +1,38 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Button, TextField, Typography } from "@mui/material";
-import updateUser from "../hooks/updateUser";
+import deleteUser from "../hooks/deleteUser";
+import swal from "sweetalert";
 
 function FormDeleteUser({user, handleClose}) {
-  console.log(user, 'form');
+ 
+  const handleDelete = async () => {
+    try {
+      console.log(user.id);
+      await deleteUser(user.id);
+      handleClose();
 
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName);
-
-  const handleUpdateUser = async () => {
-    await updateUser(user.id, firstName, lastName);
-    handleClose();
+    }
+    catch (error) {
+      swal({
+        title: "Error",
+        text: "No se ha podido borrar",
+        icon: "error"
+      });
+      console.log('error');
+      return error.message;
+    }
   };
 
 
   return (
     <Box mt={2} mb={2}>
-        <Typography mb={2}>Editar Post {user.id}</Typography>
+        <Typography mb={2}>Seguro que quiere borrar este usuario {user.id}</Typography>
       <form>
-        <Box mb={2}>
-            <TextField 
-            label="titulo" 
-            variant="outlined"
-            sx={{mb:2}}
-            placeholder="titulo"
-            value={firstName}
-            onChange={(e) => {
-              setFirstName(e.target.value);
-            }}
-          />
-          <TextField 
-            label="lastName" 
-            variant="outlined"
-            sx={{mb:2}}
-            placeholder="lastName"
-            value={lastName}
-            onChange={(e) => {
-              setLastName(e.target.value);
-            }}
-          />
-        </Box>
-        <Button variant="contained"  onClick={()=>{handleUpdateUser()}}>actualizar</Button>
+
+        <Button variant="contained"  onClick={()=>{handleDelete()}}>borrar</Button>
+        <Button variant="contained"  onClick={()=>{handleClose()}}>no borrar</Button>
+
       </form>
     </Box>
   );

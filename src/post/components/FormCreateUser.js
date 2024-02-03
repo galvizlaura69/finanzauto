@@ -7,7 +7,7 @@ import createUser from "../hooks/createUser";
 
 
 
-export default function FormCreateUser({ user, handleClose }) {
+export default function FormCreateUser({ handleClose }) {
 
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
