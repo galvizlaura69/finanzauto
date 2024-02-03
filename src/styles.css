@@ -1,0 +1,25 @@
+a{
+    padding: 10px;
+    margin-right: 20px;
+    font-size: 20px;
+    text-decoration:none ;
+    border: solid 1px blue;
+    background-color: rgba(12, 12, 196, 0.63);
+    color: white;
+}
+
+.menu:hover{
+    border: solid 1px blue;
+    background-color: rgba(0, 0, 255, 0.822);
+    color: white;
+}
+
+.title{
+    color: salmon;
+}
+
+.img-fluid{
+ width: 300px;
+ max-width: 100%;
+ height: auto;
+}
