@@ -15,10 +15,16 @@ import { CheckCircleOutlineRounded } from "@material-ui/icons";
 
 const AllUsers = ({ user }) => {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [listaPost, setListaPost] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(9);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [userSelected, setUserSelected]=useState(); 
+  const [areMyUsers, setAreMyUsers]=useState(false);
 
+  const handleOpen = () => setOpen(true);
   const handleCloseDelete = () => {
     getList();
     setOpenModalDelete(false);
@@ -33,12 +39,6 @@ const AllUsers = ({ user }) => {
     getList();
     setOpen(false);
   };
-  const [listaPost, setListaPost] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(9);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [userSelected, setUserSelected]=useState(); 
-  const [areMyUsers, setAreMyUsers]=useState(false);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
