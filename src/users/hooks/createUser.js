@@ -11,13 +11,13 @@ import { API, HEADERS } from '../../config/dummyapi';
         title
       };
 
-    const { data } = await axios.post(API + '/user/create', payLoad, {
+      
+    const { data } = await axios.post(`${API}/user/create`, payLoad, {
       headers: HEADERS,
     });
-    const posts = data.data;
-    return posts;
+    const users = data.data;
+    return users;
     }catch(error){
-      console.log(error);
       return error.message;
     }
   };

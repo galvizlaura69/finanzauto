@@ -7,10 +7,9 @@ import { API, HEADERS } from '../../config/dummyapi';
       const { data } = await axios.delete(`${API}/user/${id}`, {
         headers: HEADERS,
       });
-      const posts = data.data;
-      return posts;
+      const users = data.data;
+      return users;
     }catch(error){
-      console.log(error);
       return error.message;
     }
 

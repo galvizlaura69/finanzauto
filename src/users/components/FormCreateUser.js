@@ -2,16 +2,14 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { Button, TextField, Typography } from "@mui/material";
 import swal from 'sweetalert';
-import createUser from "../hooks/createUser";
+import createUser from "../../users/hooks/createUser";
 
 
 
-
-export default function FormCreateUser({ handleClose }) {
+const FormCreateUser = ({ handleClose })  => {
 
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
-
   const [email, setEmail] = useState();
   const [hasBadRequest, sethasBadRequest] = useState(true);
 
@@ -22,12 +20,9 @@ export default function FormCreateUser({ handleClose }) {
   };
 
   const handleBlur = ({target}) => {
-    console.log('El input perdió el foco');
-
-    console.log(email, validarEmail(email) );
       sethasBadRequest(!validarEmail(email));
-
   };
+  
   const handleGuardar = async () => {
 
     try {
@@ -46,7 +41,6 @@ export default function FormCreateUser({ handleClose }) {
         text: "No ha guardado el usuario",
         icon: "error"
       })
-      console.log('error');
       return error.message;
 
     }
@@ -55,7 +49,7 @@ export default function FormCreateUser({ handleClose }) {
 
   return (
     <Box mt={2} mb={2}>
-      <Typography mb={2}>CREAR POST</Typography>
+      <Typography mb={2}>CREAR USUARIO</Typography>
       <form>
         <Box mb={2}>
           <TextField
@@ -109,3 +103,5 @@ export default function FormCreateUser({ handleClose }) {
     </Box>
   );
 }
+
+export default FormCreateUser;

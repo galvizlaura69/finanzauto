@@ -6,8 +6,8 @@ import {
 } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
-import Menu from '../post/components/Menu';
-import AllUsers from "../post/pages/AllUsers";
+import Menu from '../users/components/Menu';
+import AllUsers from "../pages/AllUsers";
 
 
 
@@ -16,14 +16,11 @@ const Routes = ({ user }) => {
   return (
     <div>
       <Router>
-        <Box bgcolor="#eeeeee">
+        <Box>
           <Menu />
         </Box>
         <Box   >
           <Switch>
-        {/* <Route path="/user/:id">
-                <User />
-            </Route> */}
             <Route path="/">
               <AllUsers user={user} />
             </Route>

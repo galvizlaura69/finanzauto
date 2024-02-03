@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
-import { Grid, ListItem, ListItemText, Modal, Pagination, ToggleButton, Typography } from "@mui/material";
+import { Modal, Pagination, TextField, ToggleButton, Typography } from "@mui/material";
 import { CheckCircleOutlineRounded } from "@material-ui/icons";
-import getUsersAll from "../hooks/getUsersAll";
-import CardUser from "../components/CardUser";
-import FormCreateUser from "../components/FormCreateUser";
-import FormUpdateUser from "../components/FormUpdateUser";
-import FormDeleteUser from "../components/FormDeleteUser";
-import { styleModal } from "../styles/modal";
-import TableUsers from "../components/TableUsers";
+import getUsersAll from "../users/hooks/getUsersAll";
+//import CardUser from "../components/CardUser";
+import FormCreateUser from "../users/components/FormCreateUser";
+import FormUpdateUser from "../users/components/FormUpdateUser";
+import FormDeleteUser from "../users/components/FormDeleteUser";
+import { styleModal } from "../style/modal";
+import TableUsers from "../users/components/TableUsers";
 
 
-const AllUsers = ({ user }) => {
+const AllUsers = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false);
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModalDelete, setOpenModalDelete] = useState(false);
-  const [listaPost, setListaPost] = useState([]);
+  const [listUsers, setListUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(9);
   const [searchTerm, setSearchTerm] = useState('');
   const [userSelected, setUserSelected] = useState();
   const [areMyUsers, setAreMyUsers] = useState(false);
-
+  const [isEdit, setIsEdit] = useState(false);
   const handleOpenModalCreate = () => setOpenModalCreate(true);
   const handleCloseDelete = () => {
     getList();
@@ -44,11 +44,12 @@ const AllUsers = ({ user }) => {
   };
 
   const getList = async () => {
-    const { users, total } = await getUsersAll(page - 1, 4, areMyUsers);
+    const pagePayload = page - 1;
+    const { users, total } = await getUsersAll(pagePayload, 2, areMyUsers);
     setTotalPages(total);
 
     const fullNameUsers = users.map((itemUser) => {
-      itemUser.fullNameUser = `${itemUser.title}. ${itemUser.firstName} ${itemUser.lastName}`;
+      itemUser.fullNameUser = `${itemUser.id} , ${itemUser.title}. ${itemUser.firstName} ${itemUser.lastName}`;
       return itemUser;
     });
 
@@ -56,14 +57,11 @@ const AllUsers = ({ user }) => {
       return itemUser.fullNameUser.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
     }
     );
-    setListaPost(filteredUsers);
+    setListUsers(filteredUsers);
   };
 
   useEffect(() => {
     getList();
-    // setTotalPages(Math.ceil(response.data.total / 10)); // Calcula el número total de páginas
-    setTotalPages(totalPages / 10); // Calcula el número total de páginas
-
   }, [page, searchTerm, areMyUsers]);
 
   const handlePageChange = (event, newPage) => {
@@ -72,24 +70,38 @@ const AllUsers = ({ user }) => {
 
   return (
     <>
-      <div className="controls-container">
-        <input
-          type="text"
+      <div className="controls-container container-display">
+        <TextField
+          sx={{ margin: 1 }}
+          label="Buscar..."
+          variant="outlined"
           placeholder="Buscar..."
           value={searchTerm}
           onChange={handleSearchChange}
         />
-        <Typography sx={{ fontWeight: 'bold' }} align="left" component="p">only my users</Typography>
-
+        <Typography sx={{ margin: 1 }}>Usuarios creados por mi</Typography>
         <ToggleButton
+          sx={{ margin: 1 }}
           value="check"
+          placeholder="solo mis usuarios"
           selected={areMyUsers}
           onChange={() => {
             setAreMyUsers(!areMyUsers);
+            setPage(1);
           }}
         >
           <CheckCircleOutlineRounded />
         </ToggleButton>
+        <Button variant="contained" onClick={handleOpenModalCreate}>
+          CREAR NUEVO
+        </Button>
+
+     </div>
+      <Box m={2} p={2}>
+        <div className="container-display">
+        <Typography style={{ fontWeight: 'bold',fontSize: '16'}}>
+          Usuarios:
+        </Typography>
         {!areMyUsers && (
           <Pagination
             count={totalPages}
@@ -99,50 +111,15 @@ const AllUsers = ({ user }) => {
             shape="rounded"
           />
         )}
-      </div>
-
-
-      <div className="create-user-zone">
-        <Button variant="contained" onClick={handleOpenModalCreate}>CREAR NUEVO</Button>
-        <Modal
-          open={openModalCreate}
-          onClose={handleCloseCreate}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={styleModal}>
-            <FormCreateUser handleClose={handleCloseCreate} />
-            <Button onClick={handleCloseCreate}>Cerrar</Button>
-          </Box>
-        </Modal>
-      </div>
-
-      <Box m={2} p={2}>
-        <Typography sx={{ fontWeight: 'bold' }} align="center" variant="h4" component="h4" mb={8} mt={4} color="blue">usuarios</Typography>
-        
-{/*         <Grid container spacing={2}>
- */}        
-{/*           {listaPost.map((user) => (
-             <Grid item s={3} key={user.id}>
-              <Box m={2} p={2}>
-                <CardUser
-                  user={user}
-                  setOpenUpdate={setOpenModalUpdate}
-                  setOpenDelete={setOpenModalDelete}
-                  setUserSelected={setUserSelected}
-                />
-              </Box>
-            </Grid>  */}
-           
-           <TableUsers 
-           list={listaPost}
-           setOpenUpdate={setOpenModalUpdate}
-           setOpenDelete={setOpenModalDelete}
-           setUserSelected={setUserSelected}
-            />
-          
-{/*         </Grid>
- */}        {userSelected && (
+        </div>
+        <TableUsers
+          list={listUsers}
+          setOpenUpdate={setOpenModalUpdate}
+          setOpenDelete={setOpenModalDelete}
+          setUserSelected={setUserSelected}
+          setIsEdit={setIsEdit}
+        />
+        {userSelected && (
           <>
             <Modal
               open={openModalDelete}
@@ -160,17 +137,30 @@ const AllUsers = ({ user }) => {
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
-              <Box sx={styleModal}>
-                  <FormUpdateUser
-                    user={userSelected}
-                    handleClose={handleCloseUpdate} />
+              <Box sx={{...styleModal, maxHeight: '80vh', overflowY: 'auto'}}>
+                <FormUpdateUser
+                  id={userSelected.id}
+                  handleClose={handleCloseUpdate}
+                  isUpdate={isEdit}
+                />
               </Box>
             </Modal>
           </>
         )}
       </Box>
+      <Modal
+        open={openModalCreate}
+        onClose={handleCloseCreate}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={styleModal}>
+          <FormCreateUser handleClose={handleCloseCreate} />
+          <Button onClick={handleCloseCreate}>Cerrar</Button>
+        </Box>
+      </Modal>
     </>
   );
 };
 
-export default AllUsers;
+export default AllUsers;
